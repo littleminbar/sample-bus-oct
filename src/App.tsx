@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { UtilityBar } from './components/UtilityBar';
 import { SearchAndFilter } from './components/SearchAndFilter';
@@ -27,6 +27,7 @@ import { ServiceAlertsView } from './components/views/ServiceAlertsView';
 
 import { INITIAL_BUS_STOPS } from './data/transitData';
 import { BusStop, BusService } from './types/transit';
+import { fetchBusArrivals, checkApiHealth } from './services/ltaApi';
 
 export default function App() {
   // Navigation State
@@ -44,6 +45,8 @@ export default function App() {
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [secondsSinceRefresh, setSecondsSinceRefresh] = useState<number>(8);
   const [refreshInterval, setRefreshInterval] = useState<number>(15);
+  const [dataSource, setDataSource] = useState<'lta_datamall' | 'simulated_fallback'>('lta_datamall');
+  const [hasKeyConfigured, setHasKeyConfigured] = useState<boolean>(false);
 
   // Commuter Preferences & Bookmarks
   const [bookmarkedServices, setBookmarkedServices] = useState<Set<string>>(new Set(['65']));
@@ -65,6 +68,75 @@ export default function App() {
     currentStop.services[0] ||
     stops[0].services[0];
 
+  // Fetch real-time bus arrivals from LTA endpoint /api/bus-arrival
+  const loadArrivals = useCallback(async (stopCode: string, svcNo?: string) => {
+    try {
+      const data = await fetchBusArrivals(stopCode, svcNo);
+      setDataSource(data.source);
+      if (data.hasAccountKeyConfigured !== undefined) {
+        setHasKeyConfigured(data.hasAccountKeyConfigured);
+      }
+
+      if (data.Services && data.Services.length > 0) {
+        setStops((prevStops) =>
+          prevStops.map((stop) => {
+            if (stop.code !== stopCode) return stop;
+
+            const updatedServices = stop.services.map((existingSvc) => {
+              const incoming = data.Services.find((s) => s.ServiceNo === existingSvc.serviceNo);
+              if (!incoming) return existingSvc;
+
+              const mapLtaBus = (nextBus: any, order: 1 | 2 | 3) => {
+                if (!nextBus) {
+                  return existingSvc.arrivals[order - 1];
+                }
+                return {
+                  order,
+                  minutesText: nextBus.FormattedArrival || (nextBus.MinutesUntilArrival <= 0 ? 'Arr' : `${nextBus.MinutesUntilArrival}`),
+                  numericMins: nextBus.MinutesUntilArrival ?? 0,
+                  secondsRemaining: nextBus.SecondsRemaining ?? 30,
+                  vehicleType: (nextBus.VehicleTypeLabel || (nextBus.Type === 'DD' ? 'Double Decker' : 'Single Deck')) as any,
+                  load: (nextBus.Load || 'SEA') as any,
+                  wab: nextBus.Feature === 'WAB' || nextBus.IsWab === true,
+                  statusLabel: (nextBus.MinutesUntilArrival ?? 0) <= 0 ? 'ARRIVING' : 'On Schedule'
+                };
+              };
+
+              const newArrivals = [
+                mapLtaBus(incoming.NextBus, 1),
+                mapLtaBus(incoming.NextBus2, 2),
+                mapLtaBus(incoming.NextBus3, 3)
+              ] as [any, any, any];
+
+              return {
+                ...existingSvc,
+                arrivals: newArrivals
+              };
+            });
+
+            return {
+              ...stop,
+              services: updatedServices
+            };
+          })
+        );
+      }
+    } catch (err) {
+      console.warn('Arrival fetch fallback active:', err);
+    }
+  }, []);
+
+  // Check health of /api/health and load initial arrivals on mount
+  useEffect(() => {
+    checkApiHealth()
+      .then((health) => {
+        setHasKeyConfigured(health.apis.busArrival.hasLtaAccountKey);
+      })
+      .catch(() => {});
+
+    loadArrivals(currentStop.code, selectedServiceNo);
+  }, [currentStop.code, selectedServiceNo, loadArrivals]);
+
   // Auto-refresh countdown loop
   useEffect(() => {
     const timer = setInterval(() => {
@@ -76,6 +148,7 @@ export default function App() {
             // Trigger fresh sync
             setIsSyncing(true);
             setSecondsSinceRefresh(0);
+            loadArrivals(currentStop.code, selectedServiceNo);
             setTimeout(() => setIsSyncing(false), 800);
             return refreshInterval;
           }
@@ -85,13 +158,14 @@ export default function App() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isPaused, refreshInterval]);
+  }, [isPaused, refreshInterval, currentStop.code, selectedServiceNo, loadArrivals]);
 
   // Handle manual force sync
   const handleManualRefresh = () => {
     setIsSyncing(true);
     setCountdown(refreshInterval);
     setSecondsSinceRefresh(0);
+    loadArrivals(currentStop.code, selectedServiceNo);
     setTimeout(() => setIsSyncing(false), 800);
   };
 
@@ -187,6 +261,8 @@ export default function App() {
           onTogglePause={() => setIsPaused(!isPaused)}
           onManualRefresh={handleManualRefresh}
           isSyncing={isSyncing}
+          dataSource={dataSource}
+          hasKeyConfigured={hasKeyConfigured}
         />
 
         {/* Dynamic Main View Switcher */}

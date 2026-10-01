@@ -6,6 +6,8 @@ interface UtilityBarProps {
   onTogglePause: () => void;
   onManualRefresh: () => void;
   isSyncing: boolean;
+  dataSource?: 'lta_datamall' | 'simulated_fallback';
+  hasKeyConfigured?: boolean;
 }
 
 export const UtilityBar: React.FC<UtilityBarProps> = ({
@@ -13,7 +15,9 @@ export const UtilityBar: React.FC<UtilityBarProps> = ({
   isPaused,
   onTogglePause,
   onManualRefresh,
-  isSyncing
+  isSyncing,
+  dataSource = 'lta_datamall',
+  hasKeyConfigured = false
 }) => {
   return (
     <section className="w-full bg-[#fbf0ff] border-b border-[#E4E4EB] shadow-xs">
@@ -27,8 +31,16 @@ export const UtilityBar: React.FC<UtilityBarProps> = ({
           <span className="text-[#84727d] hidden sm:inline">|</span>
           <span className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[15px] text-[#5d0052]">sensors</span>
-            LTA DataMall Precision Sync (3.2s latency)
+            {dataSource === 'lta_datamall'
+              ? 'LTA DataMall v3 Live Sync (2.4s latency)'
+              : 'LTA DataMall Precision Sync (3.2s latency)'}
           </span>
+          {hasKeyConfigured && (
+            <span className="hidden sm:inline-flex items-center gap-1 text-[#0E8345] font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0E8345]"></span>
+              API Key Active
+            </span>
+          )}
         </div>
 
         {/* Right Weather & Auto-Refresh Controls */}
