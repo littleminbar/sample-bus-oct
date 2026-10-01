@@ -1,0 +1,6 @@
+{
+  "name": "SBS Transit Pulse - Real-Time Bus Telemetry & Live Arrivals",
+  "description": "Real-time Singapore bus arrivals, telemetry tracking, route schedules, nearby stops, and fare calculator powered by LTA DataMall.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
