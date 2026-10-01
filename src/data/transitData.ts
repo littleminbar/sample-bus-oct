@@ -618,6 +618,172 @@ export const INITIAL_BUS_STOPS: BusStop[] = [
         routeStops: []
       }
     ]
+  },
+  {
+    id: 'stop-83139',
+    code: '83139',
+    name: 'Opp Bedok South Ave 1',
+    road: 'Bedok South Rd',
+    subLocation: 'Opp Temasek JC / Blk 172',
+    bayInfo: 'Bay 01',
+    distanceMeters: 4200,
+    walkMinutes: 50,
+    services: [
+      {
+        serviceNo: '15',
+        category: 'TRUNK',
+        destination: 'Pasir Ris Int',
+        origin: 'Marine Parade',
+        viaRoads: 'via Tampines Ave 5, Pasir Ris Dr 1',
+        fleetType: 'Single Deck Fleet',
+        firstBus: '05:55',
+        lastBus: '23:55',
+        peakHeadway: '8 - 11 mins',
+        offPeakHeadway: '12 - 16 mins',
+        activeVehicleReg: 'SBS 8812D (Mercedes Citaro)',
+        vehicleModel: 'Mercedes-Benz O530 Citaro',
+        distanceKm: 14.8,
+        adultFare: 1.78,
+        concessionFare: 0.85,
+        trafficStatus: 'Bedok South Flow (45 km/h)',
+        speedKmh: 45,
+        smoothnessPercent: 95,
+        arrivals: [
+          { order: 1, minutesText: 'Arr', numericMins: 0, vehicleType: 'Single Deck', load: 'SEA', wab: true, statusLabel: 'ARRIVING' },
+          { order: 2, minutesText: '6', numericMins: 6, vehicleType: 'Single Deck', load: 'SEA', wab: true, statusLabel: 'On Schedule' },
+          { order: 3, minutesText: '15', numericMins: 15, vehicleType: 'Single Deck', load: 'LSD', wab: false, statusLabel: 'Heavy Load' }
+        ],
+        routeStops: [
+          { code: '83139', name: 'Opp Bedok South Ave 1', road: 'Bedok South Rd', estMins: 0, isHere: true },
+          { code: '84009', name: 'Bedok Int', road: 'Bedok North Ave 1', estMins: 6 },
+          { code: '76191', name: 'Opp Tampines Stn', road: 'Tampines Central 1', estMins: 14 },
+          { code: '77009', name: 'Pasir Ris Int', road: 'Pasir Ris Central', estMins: 26 }
+        ]
+      },
+      {
+        serviceNo: '176',
+        category: 'TRUNK',
+        destination: 'Bukit Panjang Int',
+        origin: 'Bukit Merah Int',
+        viaRoads: 'via Telok Blangah, Pasir Panjang, West Coast, Jurong East, Bukit Batok',
+        fleetType: 'Double Decker Fleet',
+        firstBus: '05:30',
+        lastBus: '23:45',
+        peakHeadway: '7 - 10 mins',
+        offPeakHeadway: '11 - 15 mins',
+        activeVehicleReg: 'SMB 3501L (MAN A95)',
+        vehicleModel: 'MAN ND323F Double Decker',
+        distanceKm: 27.5,
+        adultFare: 2.37,
+        concessionFare: 1.05,
+        trafficStatus: 'West Coast Corridor Normal (40 km/h)',
+        speedKmh: 40,
+        smoothnessPercent: 94,
+        arrivals: [
+          { order: 1, minutesText: 'Arr', numericMins: 0, vehicleType: 'Double Decker', load: 'SEA', wab: true, statusLabel: 'ARRIVING' },
+          { order: 2, minutesText: '15', numericMins: 15, vehicleType: 'Double Decker', load: 'SEA', wab: true, statusLabel: 'On Schedule' },
+          { order: 3, minutesText: '28', numericMins: 28, vehicleType: 'Double Decker', load: 'LSD', wab: true, statusLabel: 'Heavy Load' }
+        ],
+        routeStops: [
+          { code: '10009', name: 'Bukit Merah Int', road: 'Bt Merah Central', estMins: 0 },
+          { code: '14141', name: 'HarbourFront Stn', road: 'Telok Blangah Rd', estMins: 12 },
+          { code: '83139', name: 'Opp Bedok South Ave 1', road: 'Bedok South Rd', estMins: 28, isHere: true },
+          { code: '44009', name: 'Bukit Panjang Int', road: 'Jelebu Rd', estMins: 55 }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'stop-14141',
+    code: '14141',
+    name: 'Opp HarbourFront Stn',
+    road: 'Telok Blangah Rd',
+    subLocation: 'Outside HarbourFront Tower 1 / VivoCity',
+    bayInfo: 'Bay 02',
+    distanceMeters: 18500,
+    walkMinutes: 210,
+    mrtTransfer: {
+      hubName: 'HarbourFront Station Interchange',
+      description: 'Terminus for North East Line (NE1) and Circle Line (CC29) with Sentosa Express link.',
+      lines: [
+        { code: 'NE1', name: 'NE Line: Normal', status: 'Normal', colorClass: 'bg-[#9013FE]' },
+        { code: 'CC29', name: 'CC Line: Normal', status: 'Normal', colorClass: 'bg-[#FF9900]' }
+      ]
+    },
+    services: [
+      {
+        serviceNo: '65',
+        category: 'TRUNK',
+        destination: 'Tampines Int',
+        origin: 'HarbourFront Int',
+        viaRoads: 'via Lower Delta, Orchard Rd, MacPherson, Bedok Reservoir, Tampines',
+        fleetType: 'Double Decker Fleet',
+        firstBus: '05:45',
+        lastBus: '00:00',
+        peakHeadway: '6 - 9 mins',
+        offPeakHeadway: '10 - 13 mins',
+        activeVehicleReg: 'SBS 6842G (Volvo B9TL)',
+        vehicleModel: 'Volvo B9TL',
+        distanceKm: 21.4,
+        adultFare: 2.17,
+        concessionFare: 0.98,
+        trafficStatus: 'Telok Blangah Clear (42 km/h)',
+        speedKmh: 42,
+        smoothnessPercent: 96,
+        arrivals: [
+          { order: 1, minutesText: 'Arr', numericMins: 0, vehicleType: 'Double Decker', load: 'SEA', wab: true, statusLabel: 'ARRIVING' },
+          { order: 2, minutesText: '8', numericMins: 8, vehicleType: 'Double Decker', load: 'SDA', wab: true, statusLabel: 'On Schedule' },
+          { order: 3, minutesText: '19', numericMins: 19, vehicleType: 'Double Decker', load: 'SEA', wab: true, statusLabel: 'On Schedule' }
+        ],
+        routeStops: []
+      }
+    ]
+  },
+  {
+    id: 'stop-46009',
+    code: '46009',
+    name: 'Woodlands Temp Int',
+    road: 'Woodlands Sq',
+    subLocation: 'Connected to Causeway Point / Woodlands MRT',
+    bayInfo: 'Berth 08',
+    distanceMeters: 26000,
+    walkMinutes: 290,
+    mrtTransfer: {
+      hubName: 'Woodlands Integrated Transport Hub',
+      description: 'North-South Line (NS9) and Thomson-East Coast Line (TE2).',
+      lines: [
+        { code: 'NS9', name: 'NS Line: Normal', status: 'Normal', colorClass: 'bg-[#D42E12]' },
+        { code: 'TE2', name: 'TE Line: Normal', status: 'Normal', colorClass: 'bg-[#9D5B25]' }
+      ]
+    },
+    services: [
+      {
+        serviceNo: '168',
+        category: 'TRUNK',
+        destination: 'Bedok Int',
+        origin: 'Woodlands Int',
+        viaRoads: 'via SLE, Jalan Kayu, Tampines Ave 4',
+        fleetType: 'Double Decker Fleet',
+        firstBus: '05:30',
+        lastBus: '23:30',
+        peakHeadway: '7 - 10 mins',
+        offPeakHeadway: '12 - 15 mins',
+        activeVehicleReg: 'SBS 3288Y (Scania K310UD)',
+        vehicleModel: 'Scania K310UD',
+        distanceKm: 28.6,
+        adultFare: 2.37,
+        concessionFare: 1.05,
+        trafficStatus: 'SLE Smooth (70 km/h)',
+        speedKmh: 70,
+        smoothnessPercent: 97,
+        arrivals: [
+          { order: 1, minutesText: 'Arr', numericMins: 0, vehicleType: 'Double Decker', load: 'SEA', wab: true, statusLabel: 'ARRIVING' },
+          { order: 2, minutesText: '10', numericMins: 10, vehicleType: 'Double Decker', load: 'SEA', wab: true, statusLabel: 'On Schedule' },
+          { order: 3, minutesText: '24', numericMins: 24, vehicleType: 'Double Decker', load: 'SDA', wab: true, statusLabel: 'On Schedule' }
+        ],
+        routeStops: []
+      }
+    ]
   }
 ];
 

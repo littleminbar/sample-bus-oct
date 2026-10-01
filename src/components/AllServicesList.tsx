@@ -6,22 +6,38 @@ interface AllServicesListProps {
   selectedServiceNo: string;
   onSelectService: (serviceNo: string) => void;
   secondsSinceRefresh: number;
+  searchQuery?: string;
+  onClearSearch?: () => void;
 }
 
 export const AllServicesList: React.FC<AllServicesListProps> = ({
   services,
   selectedServiceNo,
   onSelectService,
-  secondsSinceRefresh
+  secondsSinceRefresh,
+  searchQuery = '',
+  onClearSearch
 }) => {
   const [filterType, setFilterType] = useState<'all' | 'double' | 'wab'>('all');
   const [sortBy, setSortBy] = useState<'timing' | 'number'>('timing');
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
+  const cleanQuery = searchQuery.trim().toLowerCase();
+
   // Filter & sort services
   const filteredServices = services
     .filter((s) => {
+      // Search filter if user typed text
+      if (cleanQuery.length > 0) {
+        const matchesNo = s.serviceNo.toLowerCase().includes(cleanQuery);
+        const matchesDest = s.destination.toLowerCase().includes(cleanQuery);
+        const matchesVia = s.viaRoads.toLowerCase().includes(cleanQuery);
+        if (!matchesNo && !matchesDest && !matchesVia) {
+          return false;
+        }
+      }
+
       if (filterType === 'double') {
         return s.fleetType.toLowerCase().includes('double');
       }
@@ -152,9 +168,45 @@ export const AllServicesList: React.FC<AllServicesListProps> = ({
         </div>
       </div>
 
+      {/* Active Search Query Filter Chip */}
+      {cleanQuery && (
+        <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-[#fbf0ff] border border-[#E4E4EB] text-[12px]">
+          <span className="text-[#52424c]">
+            Filtering services matching: <strong className="text-[#5d0052] font-bold">&ldquo;{searchQuery}&rdquo;</strong>
+          </span>
+          {onClearSearch && (
+            <button
+              onClick={onClearSearch}
+              className="text-[#5d0052] font-semibold hover:underline flex items-center gap-0.5 cursor-pointer"
+            >
+              <span>Show all services</span>
+              <span className="material-symbols-outlined text-[14px]">close</span>
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Bus Cards Stream */}
       <div className="flex flex-col gap-2.5">
-        {filteredServices.map((bus) => {
+        {filteredServices.length === 0 ? (
+          <div className="p-8 text-center bg-white rounded-xl border border-[#E4E4EB]">
+            <p className="text-[14px] font-bold text-[#1f1925]">
+              No bus services at this stop match &ldquo;{searchQuery}&rdquo;
+            </p>
+            <p className="text-[12px] text-[#52424c] mt-1">
+              Try searching by bus number or stop code in the search console above.
+            </p>
+            {onClearSearch && (
+              <button
+                onClick={onClearSearch}
+                className="mt-3 px-3.5 py-1.5 rounded-lg bg-[#5d0052] text-white text-[12px] font-bold hover:bg-[#7b1c6d] cursor-pointer"
+              >
+                Clear Search Filter
+              </button>
+            )}
+          </div>
+        ) : (
+          filteredServices.map((bus) => {
           const isSelected = selectedServiceNo === bus.serviceNo;
           const [firstArr, secondArr] = bus.arrivals;
 
@@ -240,7 +292,8 @@ export const AllServicesList: React.FC<AllServicesListProps> = ({
               </div>
             </div>
           );
-        })}
+        })
+      )}
       </div>
     </div>
   );
